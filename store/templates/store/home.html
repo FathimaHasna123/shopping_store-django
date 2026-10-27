@@ -1,0 +1,47 @@
+
+{% extends 'store/base.html' %}
+
+{% block title %}Home | ShopEase{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Discover Something You Love</h1>
+    <p>Shop your favourites at great prices.</p>
+</section>
+
+<h2 class="section-title">Our Products</h2>
+
+<div class="product-grid">
+    {% for product in products %}
+        <div class="product-card">
+            {% if product.image_url %}
+                <img src="{{ product.image_url }}"
+                     alt="{{ product.name }}">
+            {% else %}
+                <div class="no-image">No image available</div>
+            {% endif %}
+
+            <div class="product-info">
+                <h3>{{ product.name }}</h3>
+                <p>{{ product.description|truncatewords:15 }}</p>
+                <p class="price">₹{{ product.price }}</p>
+                <p>Stock: {{ product.stock }}</p>
+
+                {% if product.stock > 0 %}
+                    <form method="post"
+                          action="{% url 'add_to_cart' product.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn">
+                            Add to Cart
+                        </button>
+                    </form>
+                {% else %}
+                    <button class="btn" disabled>Out of Stock</button>
+                {% endif %}
+            </div>
+        </div>
+    {% empty %}
+        <p>No products yet. Add some in Django Admin.</p>
+    {% endfor %}
+</div>
+{% endblock %}
